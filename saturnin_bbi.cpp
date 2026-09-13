@@ -205,22 +205,22 @@ int main(){
 	uint16_t state[blocknum][16] = {};
 
     int iter=100000;
-	srand(time(0));
+	unsigned inr aux=0;
     uint64_t start_time, end_time, cyc=0;
-
-	generatemessage(input);
+	srand(time(0));	
 
     for(int count=0; count<iter;count++){
+		generatemessage(input);
         for(int i=0;i<blocknum;i++){
 			for(int j=0;j<16;j++){state[i][j]=input[i][j];}
 		}
-        
+
+		start_time=__rdtscp(&aux);
 		for(int j=0;j<blocknum;j++){
-			start_time=_rdtsc();
 			saturnin_block_decrypt(SATURNIN_CTR_R, SATURNIN_CTR_D, state[j]);
-			end_time=_rdtsc();
-			cyc+=end_time-start_time;
 		}
+		end_time=__rdtscp(&aux);
+		cyc+=end_time-start_time;
     }
 
     uint64_t aver=cyc/iter;
