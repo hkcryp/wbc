@@ -165,22 +165,22 @@ int main(){
   uint32_t state[blocknum][CLYDE_NBYTES]={};
 
   int iter=100000;
+  unsigned int aux=0;
   uint64_t start_time, end_time, cyc=0;
   srand(time(0));
 
-  generatemessage(input);
-
   for(int count=0; count<iter; count ++){
+	generatemessage(input);
     for(int i=0;i<blocknum;i++){
       for(int j=0;j<CLYDE_NBYTES;j++){state[i][j]=input[i][j];}
     }
-    
+
+	start_time=___rdtscp(&aux);
     for(int i=0; i<blocknum;i++){
-      start_time=_rdtsc();
       clyde128_decrypt(state[i]);
-      end_time=_rdtsc();
-      cyc+=end_time-start_time;
     }
+	end_time=__rdtscp(&aux);
+    cyc+=end_time-start_time;
   }
 
   uint64_t aver=cyc/iter;
