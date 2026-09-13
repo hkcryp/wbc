@@ -109,7 +109,7 @@ int main(){
     table.close(); 
 
     for(int count=0; count<iter; count ++){      
-			generatemessage(input);
+	  generatemessage(input);
       for(int j=0; j<blocknum; j++){      
         for (int i = 0; i < (STATE_WORDS)/2; i++) {
           state[j].x[i] = input[j][2*i];
@@ -117,11 +117,11 @@ int main(){
         }
       } 
 
-			start_time=__rdtscp(&aux);	
+	  start_time=__rdtscp(&aux);	
       for(int j=0; j<blocknum; j++){         
         sparkle_ref(state[j], memblock);
       }
-			end_time=__rdtscp(&aux);
+	  end_time=__rdtscp(&aux);
       cyc+=end_time-start_time;
     }
 
