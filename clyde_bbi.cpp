@@ -175,7 +175,7 @@ int main(){
       for(int j=0;j<CLYDE_NBYTES;j++){state[i][j]=input[i][j];}
     }
 
-	start_time=___rdtscp(&aux);
+	start_time=__rdtscp(&aux);
     for(int i=0; i<blocknum;i++){
       clyde128_decrypt(state[i]);
     }
