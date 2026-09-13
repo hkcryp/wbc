@@ -159,7 +159,7 @@ int main(){
   srand(time(0));
 
   for(int count=0; count<iter; count ++){      
-		generatemessage(input); 
+	generatemessage(input); 
     for(int j=0; j<blocknum; j++){      
       for (int i = 0; i < (STATE_WORDS)/2; i++) {
         state[j].x[i] = input[j][2*i];
