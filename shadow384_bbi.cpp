@@ -17,10 +17,6 @@
 #define rotr(x,c) (((x) >> (c)) | ((x) << ((32) - (c))))
 #define xtime(reg)(((reg) << (1)) ^ ((((reg) >> (7))&1)* (0x1b)))
 
-#pragma intrinsic(__rdtsc)
-uint64_t start_rdtsc(){return __rdtsc();}
-uint64_t end_rdtsc(){return __rdtsc();}
-
 using namespace std;
 
 uint8_t invSB[256]={0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb,
@@ -209,20 +205,20 @@ int main(){
   uint32_t state[blocknum][SHADOW_NBYTES]={};
 
   int iter = 100000;
+  unsigned int aux=0;
   uint64_t start_time, end_time, cyc=0;
   srand(time(0));
 
-  generatemessage(state);
-
   for(int count=0; count<iter; count ++){
+	generatemessage(state);
     for(int j=0; j<blocknum;j++){
       for(int i=0;i<SHADOW_NBYTES;i++){state[j][i]=input[j][i];}
     }    
-    start_time=_rdtsc();
+    start_time=__rdtscp(&aux);
     for(int j=0;j<blocknum;j++){
       shadowdec(state[j]);
       }    
-    end_time=_rdtsc();
+    end_time=__rdtscp(&aux);
     cyc+=end_time-start_time;
   }
 
