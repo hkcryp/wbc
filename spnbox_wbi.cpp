@@ -60,7 +60,7 @@ int main(){
     uint32_t state[blocknum][ln]={};
 
     int iter=100000;
-    
+    unsigned int aux=0
     uint64_t start_time,end_time,cyc=0;
 
     ifstream table("~/table/sbox32.bin", ios::in | ios::binary );
@@ -70,17 +70,16 @@ int main(){
         table.read(memblock,readSize);
         table.close();
 
-        generatemessage(input);
-
         for(int count=0;count<iter;count ++){
+			generatemessage(input);
             for(int j=0;j<blocknum;j++){
                 for(int i=0;i<ln;i++){state[j][i]=input[j][i];} 
             }
-            start_time=_rdtsc();
+            start_time=__rdtscp(&aux);
             for(int j=0;j<blocknum;j++){
                 enc(state[j], memblock);
             }
-            end_time=_rdtsc();
+            end_time=__rdtscp(&aux);
             cyc+=end_time-start_time;
         }
 
