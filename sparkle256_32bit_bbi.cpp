@@ -167,11 +167,11 @@ int main(){
       }
     } 
 
-		start_time=__rdtscp(&aux);
+	start_time=__rdtscp(&aux);
     for(int j=0; j<blocknum; j++){   
       sparkle_inv_ref(state[j]);
     }
-		end_time=__rdtscp(&aux);
+	end_time=__rdtscp(&aux);
     cyc+=end_time-start_time;
   }
 
