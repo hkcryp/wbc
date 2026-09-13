@@ -16,10 +16,6 @@
 
 #define rotr(x,c) (((x) >> (c)) | ((x) << ((32) - (c))))
 
-#pragma intrinsic(__rdtsc)
-uint64_t start_rdtsc(){return __rdtsc();}
-uint64_t end_rdtsc(){return __rdtsc();}
-
 using namespace std;
 
 static const uint32_t rc[SHADOW_NR][LS_ROWS] = {
