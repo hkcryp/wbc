@@ -18,16 +18,6 @@
 #define xtime(a) (((a) << (1)) ^ (((a) >> (3)) * (0x13)))
 #define rotr(x,c) (((x) >> (c)) | ((x) << ((32) - (c))))
 
-#pragma intrinsic(__rdtsc)
-uint64_t start_rdtsc()
-{
-	return __rdtsc();
-}
-uint64_t end_rdtsc()
-{
-	return __rdtsc();
-}
-
 using namespace std;
 
 uint32_t shadow_rc[SHADOW_NS][LS_ROWS] = {
@@ -396,29 +386,30 @@ int main(){
   uint32_t state[blocknum][SHADOW_NBYTES]={};
 
   int iter=100000;
+  unsigned int aux=0;
   uint64_t start_time, end_time, cyc=0;
   srand(time(0));
 
-  generatemessage(input);
   GenerateXTimeTable();
-	GenerateLBoxTable();
+  GenerateLBoxTable();
 
   for(int count=0; count<iter; count ++){
+	generatemessage(input);
     for(int j=0; j<blocknum;j++){
       for(int i=0;i<SHADOW_NBYTES;i++){state[j][i]=input[j][i];}
     }    
-    start_time=_rdtsc();
+    start_time=__rdtscp(&aux);
     for(int j=0;j<blocknum;j++){
       shadowdec(state[j]);
       }    
-    end_time=_rdtsc();
+    end_time=__rdtscp(&aux);
     cyc+=end_time-start_time;
   }
 
   uint64_t aver=cyc/iter;
 
   cout << "average cost " << aver << " CPU cycles for " << iter << " test" << endl;
-	uint64_t cpb = aver/(blocknum*SHADOW_NBYTES*4);
+  uint64_t cpb = aver/(blocknum*SHADOW_NBYTES*4);
   cout << "average CPB for decryption is " << cpb << endl; 
 
   return 0;
