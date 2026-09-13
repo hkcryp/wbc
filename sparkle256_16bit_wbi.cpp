@@ -19,16 +19,6 @@
 #define ROT(x, n) (((x) >> (n)) | ((x) << (16-(n))))
 #define ELL(x) (ROT(((x) ^ ((x) << 8)), 8))
 
-#pragma intrinsic(__rdtsc)
-uint64_t start_rdtsc()
-{
-	return __rdtsc();
-}
-uint64_t end_rdtsc()
-{
-	return __rdtsc();
-}
-
 using namespace std;
 
 typedef struct {
@@ -105,28 +95,25 @@ int main(){
   SparkleState state[blocknum] = {};
 
   int iter=100000;
-  
+  unsigned int aux=0;
   uint64_t start_time, end_time, cyc=0;
   srand(time(0));
-
-  generatemessage(input);   
-
+	
   for(int count=0; count<iter; count ++){      
-
+	generatemessage(input);
     for(int j=0; j<blocknum; j++){      
       for (int i = 0; i < (STATE_WORDS)/2; i++) {
         state[j].x[i] = input[j][2*i];
         state[j].y[i] = input[j][2*i+1];
       }
     } 
-    
-    for(int j=0; j<blocknum; j++){ 
-      start_time =_rdtsc();        
+	  
+    start_time =__rdtscp(&aux);
+    for(int j=0; j<blocknum; j++){     
       sparkle_ref(state[j], STATE_BRANS);
-      end_time =_rdtsc();
-      cyc += end_time - start_time;
     }
-
+    end_time =__rdtscp(&aux);
+    cyc += end_time - start_time;
   }
 
   uint64_t aver = cyc/iter;
